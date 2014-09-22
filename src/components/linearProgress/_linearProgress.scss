@@ -25,10 +25,11 @@ $bar-height:5px;
     height: $bar-height;
     background-color: $color-blue-500;
     position: absolute;
+    width: 100%;
   }
 
   .bar1, .bar2 {
-    @include transition(width 0.2s linear);
+    @include transition(all 0.2s linear);
   }
 
   &[mode=determinate] {

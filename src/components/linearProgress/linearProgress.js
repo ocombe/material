@@ -52,18 +52,23 @@ function MaterialLinearProgressDirective($timeout) {
       tElement.attr('aria-valuemax', 100);
 
       return function(scope, element, attr) {
-        var bar1 = angular.element(element[0].querySelector('.bar1')),
-            bar2 = angular.element(element[0].querySelector('.bar2')),
+        var bar1Style = element[0].querySelector('.bar1').style,
+            bar2Style = element[0].querySelector('.bar2').style,
             container = angular.element(element[0].querySelector('.container'));
 
         attr.$observe('value', function(value) {
           var clamped = clamp(value);
-          element.attr('aria-valuenow', clamped)
-          bar2.css('width', clamped.toString() + '%');
+          element.attr('aria-valuenow', clamped);
+
+          var transform =  transformTable[clamped];
+          bar2Style.transform = transform;
+          bar2Style.webkitTransform = transform;
         });
 
         attr.$observe('secondaryvalue', function(value) {
-          bar1.css('width', clamp(value).toString() + '%');
+          var transform =  transformTable[clamp(value)];
+          bar1Style.transform = transform;
+          bar1Style.webkitTransform = transform;
         });
 
         $timeout(function() {
@@ -78,6 +83,18 @@ function MaterialLinearProgressDirective($timeout) {
 // Private Methods
 // **********************************************************
 
+var transformTable = new Array(101);
+
+for(var i = 0; i < 101; i++){
+  transformTable[i] = makeTransform(i);
+}
+
+function makeTransform(value){
+  var scale = value/100;
+  var translateX = (value-100)/2;
+  return 'translateX(' + translateX.toString() + '%) scale(' + scale.toString() + ', 1)';
+}
+
 function clamp(value) {
   if (value > 100) {
     return 100;
@@ -87,5 +104,5 @@ function clamp(value) {
     return 0;
   }
 
-  return value || 0;
+  return Math.ceil(value || 0);
 }
