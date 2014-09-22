@@ -8,15 +8,17 @@ $bar-height:5px;
   .container {
     overflow: hidden;
     position: relative;
-    height: 0;
+    height: $bar-height;
     background-color: $color-blue-100;
     top: $bar-height;
+    transform: translate(0, 5px) scale(1, 0);
+    -webkit-transform: translate(0, 5px) scale(1, 0);
     @include transition(all .3s linear);
   }
 
   .container.ready {
-    height: $bar-height;
-    top: 0;
+    transform: translate(0, 0) scale(1, 1);
+    -webkit-transform: translate(0, 0) scale(1, 1);
   }
 
   .bar {
