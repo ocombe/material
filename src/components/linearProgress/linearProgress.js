@@ -47,22 +47,29 @@ function MaterialLinearProgressDirective($timeout) {
       '<div class="bar bar1"></div>' +
       '<div class="bar bar2"></div>' +
       '</div>',
-    link: function(scope, element, attr) {
-      var bar1 = angular.element(element[0].querySelector('.bar1')),
-          bar2 = angular.element(element[0].querySelector('.bar2')),
-          container = angular.element(element[0].querySelector('.container'));
+    compile: function compile(tElement, tAttrs, transclude) {
+      tElement.attr('aria-valuemin', 0);
+      tElement.attr('aria-valuemax', 100);
 
-      attr.$observe('value', function(value) {
-        bar2.css('width', clamp(value).toString() + '%');
-      });
+      return function(scope, element, attr) {
+        var bar1 = angular.element(element[0].querySelector('.bar1')),
+            bar2 = angular.element(element[0].querySelector('.bar2')),
+            container = angular.element(element[0].querySelector('.container'));
 
-      attr.$observe('secondaryvalue', function(value) {
-        bar1.css('width', clamp(value).toString() + '%');
-      });
+        attr.$observe('value', function(value) {
+          var clamped = clamp(value);
+          element.attr('aria-valuenow', clamped)
+          bar2.css('width', clamped.toString() + '%');
+        });
 
-      $timeout(function() {
-        container.addClass('ready');
-      });
+        attr.$observe('secondaryvalue', function(value) {
+          bar1.css('width', clamp(value).toString() + '%');
+        });
+
+        $timeout(function() {
+          container.addClass('ready');
+        });
+      }
     }
   };
 }
