@@ -64,7 +64,7 @@ $bar-height:5px;
       width: 100%;
       margin-top: 0px;
       position: absolute;
-      background: radial-gradient(#d0d9ff 0%, #d0d9ff 20%, transparent 50%);
+      background: radial-gradient(#d0d9ff 0%, #d0d9ff 16%, transparent 42%);
       background-color: transparent;
       background-size: 10px 10px;
       background-position: 0px -23px;
@@ -78,8 +78,6 @@ $bar-height:5px;
 
   &[mode=query] {
     .bar2 {
-      left: 50%;
-      width: 10%;
       @include animation(query .8s infinite cubic-bezier(0.390, 0.575, 0.565, 1.000));
     }
   }
@@ -216,13 +214,14 @@ $bar-height:5px;
 
 @include keyframes(query) {
   0% {
-    width: 30%;
-    left: 70%;
+    opacity: 1;
+    transform: translateX(35%) scale(.3, 1);
+    -webkit-transform: translateX(35%) scale(.3, 1);
   }
   100% {
-    width: 0%;
-    left: 0%;
     opacity: 0;
+    transform: translateX(-50%) scale(0, 1);
+    -webkit-transform: translateX(-50%) scale(0, 1);
   }
 }
 

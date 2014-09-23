@@ -57,6 +57,10 @@ function MaterialLinearProgressDirective($timeout) {
             container = angular.element(element[0].querySelector('.container'));
 
         attr.$observe('value', function(value) {
+          if(attr.mode == 'query'){
+            return;
+          }
+
           var clamped = clamp(value);
           element.attr('aria-valuenow', clamped);
 
