@@ -18,22 +18,23 @@ ddescribe('$$interimElementFactory service', function() {
   }));
 
   describe('construction', function() {
+    it('sets defaults options', inject(function($$interimElementFactory) {
+      var defaults = { templateUrl: 'testing.html' };
+      var Service = $$interimElementFactory(defaults);
+      Service.show();
+      expect($compilerSpy.mostRecentCall.args[0].templateUrl).toBe('testing.html');
+    }));
   });
 
   describe('instance', function() {
     describe('#show', function() {
-      forwardsToMaterialCompiler('templateUrl');
+      it('forwards options to $materialCompiler', inject(function($$interimElementFactory) {
+        var options = {template: 'testing'};
+        var Service = $$interimElementFactory();
+        Service.show(options);
+        expect($compilerSpy.mostRecentCall.args[0].template).toBe('testing');
+      }));
     });
   });
-
-  function forwardsToMaterialCompiler(optionName) {
-    it('forwards option ' + optionName + ' to $materialCompiler', inject(function($$interimElementFactory) {
-      var options = {};
-      options[optionName] = 'testing';
-      var Service = $$interimElementFactory();
-      Service.show(options);
-      expect($compilerSpy.mostRecentCall.args[0][optionName]).toBeDefined();
-    }));
-  }
 });
 

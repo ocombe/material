@@ -34,14 +34,16 @@ function InterimElementFactory($q, $rootScope, $timeout, $rootElement, $material
 
     InterimElement.show = function(options) {
       if(deferred) {
-        InterimElement.hide()
+        InterimElement.hide();
       }
 
       deferred = $q.defer();
 
+      options = options || {};
+
       lastOptions = options = angular.extend({
         scope: options.scope || $rootScope.$new()
-      }, InterimElement.defaults, options || {});
+      }, InterimElement.defaults, options);
 
       $materialCompiler.compile(options).then(function(compiledData) {
         currentEl = compileData.link(options.scope);
