@@ -190,7 +190,7 @@ function MaterialTabDirective($materialInkRipple, $compile, $aria) {
         var tabContentId = 'content_' + tabId;
         element.attr({
           id: tabId,
-          role: 'tabItemCtrl',
+          role: 'tab',
           tabIndex: '-1', //this is also set on select/deselect in tabItemCtrl
           'aria-controls': tabContentId
         });
