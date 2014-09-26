@@ -12,6 +12,7 @@ angular.module('material.components.toast', ['material.services.compiler'])
     '$timeout',
     '$rootScope',
     '$materialCompiler',
+    '$materialSwipe',
     '$rootElement',
     '$animate',
     QpToastService
@@ -82,7 +83,7 @@ function QpToastDirective() {
  * and the toast will not open until the promises resolve.
  * @param {string=} controllerAs An alias to assign the controller to on the scope.
  */
-function QpToastService($timeout, $rootScope, $materialCompiler, $rootElement, $animate) {
+function QpToastService($timeout, $rootScope, $materialCompiler, $materialSwipe, $rootElement, $animate) {
   var recentToast;
   function toastOpenClass(position) {
     return 'material-toast-open-' +
@@ -119,40 +120,41 @@ function QpToastService($timeout, $rootScope, $materialCompiler, $rootElement, $
       // Controller will be passed a `$hideToast` function
       compileData.locals.$hideToast = destroy;
 
+      var delayTimeout;
       var scope = $rootScope.$new();
       var element = compileData.link(scope);
-
       var toastParentClass = toastOpenClass(options.position);
+      var configureSwipe = $materialSwipe(scope, "swipeleft swiperight");
+
       element.addClass(options.position);
       toastParent.addClass(toastParentClass);
 
-      var delayTimeout;
-      $animate.enter(element, toastParent).then(function() {
-        if (options.duration) {
-          delayTimeout = $timeout(destroy, options.duration);
-        }
-      });
+      $animate
+        .enter(element, toastParent).then(function() {
+          if (options.duration) {
+            delayTimeout = $timeout(destroy, options.duration);
+          }
+        })
+        .then(function()
+        {
+          //Add swipeleft/swiperight class to element so it can animate correctly
 
-      var hammertime = new Hammer(element[0], {
-        recognizers: [
-          [Hammer.Swipe, { direction: Hammer.DIRECTION_HORIZONTAL }]
-        ]
-      });
-      hammertime.on('swipeleft swiperight', onSwipe);
-      
-      function onSwipe(ev) {
-        //Add swipeleft/swiperight class to element so it can animate correctly
-        element.addClass(ev.type);
-        $timeout(destroy);
-      }
+          configureSwipe(element, function onSwipe(ev) {
+            element.addClass(ev.type);
+            $timeout(destroy);
+          });
+        });
 
       return destroy;
+
+      // ******************************
+      // Internal methods
+      // ******************************
 
       function destroy() {
         if (destroy.called) return;
         destroy.called = true;
 
-        hammertime.destroy();
         toastParent.removeClass(toastParentClass);
         $timeout.cancel(delayTimeout);
         $animate.leave(element).then(function() {
