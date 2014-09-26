@@ -4,7 +4,7 @@
  * @description
  * Toast
  */
-angular.module('material.components.toast', ['material.services.compiler'])
+angular.module('material.components.toast', ['material.services.compiler', 'material.components.swipe'])
   .directive('materialToast', [
     QpToastDirective
   ])
@@ -30,7 +30,7 @@ function QpToastDirective() {
  * @module material.components.toast
  *
  * @description
- * Open a toast notification on any position on the screen, with an optional 
+ * Open a toast notification on any position on the screen, with an optional
  * duration.
  *
  * Only one toast notification may ever be active at any time. If a new toast is
@@ -68,7 +68,7 @@ function QpToastDirective() {
  * @param {string=} template Same as templateUrl, except this is an actual
  * template string.
  * @param {number=} duration How many milliseconds the toast should stay
- * active before automatically closing.  Set to 0 to disable duration. 
+ * active before automatically closing.  Set to 0 to disable duration.
  * Default: 3000.
  * @param {string=} position Where to place the toast. Available: any combination
  * of 'bottom', 'left', 'top', 'right', 'fit'. Default: 'bottom left'.
@@ -76,7 +76,7 @@ function QpToastDirective() {
  * The controller will be injected the local `$hideToast`, which is a function
  * used to hide the toast.
  * @param {string=} locals An object containing key/value pairs. The keys will
- * be used as names of values to inject into the controller. For example, 
+ * be used as names of values to inject into the controller. For example,
  * `locals: {three: 3}` would inject `three` into the controller with the value
  * of 3.
  * @param {object=} resolve Similar to locals, except it takes promises as values
@@ -124,7 +124,7 @@ function QpToastService($timeout, $rootScope, $materialCompiler, $materialSwipe,
       var scope = $rootScope.$new();
       var element = compileData.link(scope);
       var toastParentClass = toastOpenClass(options.position);
-      var configureSwipe = $materialSwipe(scope, "swipeleft swiperight");
+      var configureSwipe = $materialSwipe(scope, "swiperight swipeleft");
 
       element.addClass(options.position);
       toastParent.addClass(toastParentClass);
@@ -134,16 +134,14 @@ function QpToastService($timeout, $rootScope, $materialCompiler, $materialSwipe,
           if (options.duration) {
             delayTimeout = $timeout(destroy, options.duration);
           }
-        })
-        .then(function()
-        {
-          //Add swipeleft/swiperight class to element so it can animate correctly
-
-          configureSwipe(element, function onSwipe(ev) {
-            element.addClass(ev.type);
-            $timeout(destroy);
-          });
         });
+
+      //Add swipeleft/swiperight class to element so it can animate correctly
+
+      configureSwipe(element, function onSwipe(ev) {
+        element.addClass(ev.type);
+        $timeout(destroy);
+      });
 
       return destroy;
 
