@@ -13,9 +13,9 @@ angular.module('material.components.tabs')
 function TabItemController(scope, element, $compile, $animate, $materialSwipe) {
   var self = this;
 
-  var configureSwipe = $materialSwipe( scope );
-  var attachSwipe = angular.noop;
   var detachSwipe = angular.noop;
+  var attachSwipe = function() { return detachSwipe };
+  var configureSwipe = $materialSwipe( scope );
 
   // special callback assigned by TabsController
   self.$$onSwipe = angular.noop;

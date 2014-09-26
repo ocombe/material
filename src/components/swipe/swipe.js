@@ -1,5 +1,3 @@
-(function( Hammer ) {
-
   /**
    * @ngdoc module
    * @name material.components.swipe
@@ -72,23 +70,33 @@
           // Internal methods
           // **********************
 
+          /**
+           * Delegate swipe event to callback function
+           * and ensure $digest is triggered.
+           *
+           * @param ev HammerEvent
+           */
           function swipeHandler(ev) {
+            ev.preventDefault();
+            ev.srcEvent.stopPropagation();
+
             scope.$apply(function() {
               onSwipeCallback(ev);
             });
+
           }
 
-          // enable listeners are return detach() fn
+          /**
+           * Enable listeners and return detach() fn
+           */
           function attachSwipe() {
             hammertime.on(eventTypes, swipeHandler );
-            return detachSwipe;
+
+            return function detachSwipe() {
+              hammertime.off( eventTypes );
+            }
           }
 
-          // disable listeners
-          function detachSwipe() {
-            hammertime.off( eventTypes );
-            return angular.noop;
-          }
 
         };
       };
@@ -211,6 +219,4 @@
       }
     ]);
 
-
-})( window.Hammer );
 
